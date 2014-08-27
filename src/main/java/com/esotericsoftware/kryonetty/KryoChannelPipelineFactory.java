@@ -89,14 +89,14 @@ public class KryoChannelPipelineFactory implements ChannelPipelineFactory {
             pipeline.addAfter("encoder","gzipdecoder", new ZlibDecoder());
             pipeline.addAfter("gzipdecoder","gzipencoder", new ZlibEncoder());
         }
-                if (endpoint.getSslContext() != null) {
+        if (endpoint.getSslContext() != null) {
             SslHandler sslHandler;
             if (endpoint.getRole() == Endpoint.EndpointRole.CLIENT) {
                 sslHandler = endpoint.getSslContext().newHandler(endpoint.getConnectionAddress().getHostString(), endpoint.getConnectionAddress().getPort());
             } else {
                 sslHandler = endpoint.getSslContext().newHandler();
             }
-            pipeline.addAfter("gzipencoder","encryption", sslHandler);
+            pipeline.addBefore("executor","encryption", sslHandler);
         }
         return pipeline;
     }
